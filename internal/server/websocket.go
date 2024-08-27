@@ -52,7 +52,7 @@ func (s *wsServer) handleListen(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		msgRsp := fmt.Sprintf("Received message: %s. Time received: %v.\n", string(msgContent), timeReceived)
+		msgRsp := fmt.Sprintf("Received message: %s. Time received: %v.\n", string(msgContent), timeReceived.Format(time.UnixDate))
 		fmt.Print(msgRsp)
 
 		if err := s.Conn.WriteMessage(msgType, []byte(msgRsp)); err != nil {
