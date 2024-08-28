@@ -42,10 +42,14 @@ func (s *wsServer) handleListen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.Conn = conn
-	log.Println("Websocket connected.")
 
+	go handleConnection(s.Conn, w)
+}
+
+func handleConnection(conn *websocket.Conn, w http.ResponseWriter) {
+	log.Printf("Client connected: %s\n", conn.RemoteAddr())
 	for {
-		msgType, msgContent, err := s.Conn.ReadMessage()
+		msgType, msgContent, err := conn.ReadMessage()
 		timeReceived := time.Now()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -55,7 +59,7 @@ func (s *wsServer) handleListen(w http.ResponseWriter, r *http.Request) {
 		msgRsp := fmt.Sprintf("Received message: %s. Time received: %v.\n", string(msgContent), timeReceived.Format(time.UnixDate))
 		fmt.Print(msgRsp)
 
-		if err := s.Conn.WriteMessage(msgType, []byte(msgRsp)); err != nil {
+		if err := conn.WriteMessage(msgType, []byte(msgRsp)); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

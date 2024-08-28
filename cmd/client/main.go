@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/url"
 	"os"
@@ -47,7 +48,7 @@ func run(server string) error {
 			if err != nil {
 				return err
 			}
-			log.Printf("%s", message)
+			fmt.Printf("%s", message)
 		}
 	}()
 
